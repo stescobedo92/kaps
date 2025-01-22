@@ -78,7 +78,7 @@ jobs:
         run: |
           rustup target add ${{ matrix.config.target }}
           
-          if [[ "${{ matrix.config.runner }}" == == *"apple"* ]]; then
+          if [[ "${{ matrix.config.runner }}" == "macos-latest" ]]; then
             brew install filosottile/musl-cross/musl-cross
           fi
 
@@ -93,7 +93,7 @@ jobs:
         shell: bash
         run: cargo build --release --target ${{ matrix.config.target }}
 
-      - name: Package Binary (Windows Only)
+      - name: Package Binary
         shell: bash
         run: |
           mkdir -p dist

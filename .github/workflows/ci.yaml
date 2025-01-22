@@ -57,9 +57,10 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install Dependencies
+        shell: bash
         run: |
           rustup target add ${{ matrix.config.target }}
-          if [ "${{ matrix.config.target }}" = "x86_64-apple-darwin" ]; then
+          if [[ "${{ matrix.config.target }}" == *"apple"* ]]; then
             brew install filosottile/musl-cross/musl-cross
           fi
 

@@ -38,6 +38,12 @@ jobs:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
 
+    # Permisos necesarios para crear releases y subir assets
+    permissions:
+      contents: write
+      releases: write
+      packages: write
+
     steps:
       - uses: actions/checkout@v3
 
@@ -48,26 +54,31 @@ jobs:
           override: true
 
       - name: Build Release
-        run: cargo build --release
+        run: |
+          cargo build --release
+          mkdir -p release_binaries
+          cp target/release/kaps release_binaries/kaps-linux
 
-      - name: Upload Artifact
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: kaps-binaries
-          path: |
-            target/release/kaps
-            target/release/kaps.exe
+          name: release-binaries
+          path: release_binaries/
 
       - name: Create Release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: release-v${{ github.run_id }}-${{ github.sha }}
-          release_name: Release ${{ github.run_id }}
+          tag_name: v${{ github.run_number }}
+          name: Release v${{ github.run_number }}
+          body: |
+            ## Changelog
+            
+            - Automated release for commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
+            - Built with Rust stable
+            - Includes Linux binary (other OS builds coming soon)
+          files: |
+            release_binaries/kaps-linux
           draft: false
           prerelease: false
-          body: |
-            Automated release for commit ${{ github.sha }}
-            - Built with Rust stable
-            - Includes Linux, Windows and macOS binaries

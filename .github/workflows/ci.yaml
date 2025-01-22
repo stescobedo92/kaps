@@ -1,4 +1,4 @@
-name: Rust CI
+name: Rust CI/CD
 
 on:
   push:
@@ -19,6 +19,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -30,3 +31,44 @@ jobs:
         with:
           command: test
           args: -- --test-threads=1
+
+  release:
+    name: Create Release
+    needs: test
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: Build Release
+        run: cargo build --release
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: kaps-binaries
+          path: |
+            target/release/kaps
+            target/release/kaps.exe
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: release-v${{ github.run_id }}-${{ github.sha }}
+          release_name: Release ${{ github.run_id }}
+          draft: false
+          prerelease: false
+          body: |
+            Automated release for commit ${{ github.sha }}
+            - Built with Rust stable
+            - Includes Linux, Windows and macOS binaries
+          assets_path: target/release/

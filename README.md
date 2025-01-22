@@ -1,4 +1,4 @@
-# 🔐 KAPS - File Vault CLI
+# 🔐 KAPS - Keep Assets Protected Securely
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Security](https://img.shields.io/badge/security-AES--256--CBC-green.svg)

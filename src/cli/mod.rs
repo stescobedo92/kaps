@@ -9,13 +9,16 @@ use std::path::PathBuf;
     name = "kaps",
     version,
     about = "🔒 Enterprise File Vault with AES-256-CBC",
-    before_help = "KAPS - Keep Assets Protected Securely",
-    help_template = "\
+    long_about = None,
+    help_template = r#"
 {before-help}{name} {version}
-{author-with-newline}{about-with-newline}
-{usage-heading} {usage}
+{about}
 
-{all-args}{after-help}"
+USAGE:
+  {usage}
+
+COMMANDS:
+{all-args}{after-help}"#
 )]
 pub struct Args {
     #[command(subcommand)]

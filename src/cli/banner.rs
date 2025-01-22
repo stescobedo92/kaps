@@ -24,3 +24,7 @@ pub fn show_banner() {
     println!("{}", " Keep Assets Protected Securely v0.1.0 ".bold().on_cyan());
     println!("{}", "🔐 AES-256-CBC | PBKDF2-HMAC-SHA256 🔐\n".blue());
 }
+
+pub fn show_runtime_banner() {
+    println!("{}", "🔐 AES-256-CBC | PBKDF2-HMAC-SHA256 🔐".blue());
+}

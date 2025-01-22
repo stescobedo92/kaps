@@ -10,7 +10,9 @@ use std::{
     path::{Path, PathBuf},
 };
 use anyhow::Context;
+use tempfile::TempDir;
 use walkdir::WalkDir;
+use crate::crypto;
 
 type Aes256CbcEnc = cbc::Encryptor<aes::Aes256>;
 type Aes256CbcDec = cbc::Decryptor<aes::Aes256>;
@@ -140,4 +142,176 @@ fn read_salt(input_dir: &Path) -> Result<[u8; SALT_LENGTH], KapsError> {
     let mut salt_array = [0u8; SALT_LENGTH];
     salt_array.copy_from_slice(&salt);
     Ok(salt_array)
+}
+
+// Helper function para crear estructura de directorios de prueba
+fn create_test_structure(root: &Path) -> PathBuf {
+    let subdir = root.join("subdir");
+    fs::create_dir(&subdir).unwrap();
+
+    let files = vec![
+        root.join("file1.txt"),
+        root.join("file2.dat"),
+        subdir.join("file3.bin"),
+    ];
+
+    for file in files {
+        fs::write(file, "test data").unwrap();
+    }
+
+    root.to_path_buf()
+}
+
+#[test]
+fn test_full_encryption_cycle() -> Result<(), KapsError> {
+    let original_dir = TempDir::new()?;
+    let encrypted_dir = TempDir::new()?;
+    let decrypted_dir = TempDir::new()?;
+    let password = "ValidPass123!";
+
+    let test_root = create_test_structure(original_dir.path());
+
+    // Fase de encriptación
+    crypto::encrypt_directory(&test_root, encrypted_dir.path(), password)?;
+
+    // Verificar que se creó el salt
+    let salt_file = encrypted_dir.path().join(".salt");
+    assert!(salt_file.exists());
+
+    // Fase de desencriptación
+    crypto::decrypt_directory(encrypted_dir.path(), decrypted_dir.path(), password)?;
+
+    // Verificar estructura y contenido
+    let files = vec![
+        "file1.txt",
+        "file2.dat",
+        "subdir/file3.bin",
+    ];
+
+    for file in files {
+        let original = fs::read(test_root.join(file))?;
+        let decrypted = fs::read(decrypted_dir.path().join(file))?;
+        assert_eq!(original, decrypted, "File {} mismatch", file);
+    }
+
+    Ok(())
+}
+
+#[test]
+fn test_password_validation() {
+    let cases = vec![
+        ("Short1!", "at least 12 characters"),
+        ("nouppercase123!", "uppercase letter"),
+        ("NoDigitsOrSpecials", "number or special character"),
+        ("ValidPass123!", ""), // Caso válido
+    ];
+
+    for (input, expected_error) in cases {
+        let result = crypto::validate_password(input);
+
+        if expected_error.is_empty() {
+            assert!(result.is_ok(), "Failed valid password: {}", input);
+        } else {
+            match result {
+                Err(KapsError::PasswordValidation(msg)) =>
+                    assert!(msg.contains(expected_error), "Unexpected error: {}", msg),
+                _ => panic!("Unexpected result for: {}", input),
+            }
+        }
+    }
+}
+
+#[test]
+fn test_salt_handling() -> Result<(), KapsError> {
+    let dir = TempDir::new()?;
+    let password = "AnotherValid123!";
+
+    // Generar salt durante encriptación
+    crypto::encrypt_directory(dir.path(), dir.path(), password)?;
+
+    // Leer salt generado
+    let salt = crypto::utils::read_salt(dir.path())?;
+    assert_eq!(salt.len(), 16, "Invalid salt length");
+
+    // Test lectura salt corrupto
+    fs::write(dir.path().join(".salt"), vec![0u8; 8])?;
+    match crypto::utils::read_salt(dir.path()) {
+        Err(KapsError::FileFormat(msg)) =>
+            assert!(msg.contains("Invalid salt length")),
+        _ => panic!("Should fail on invalid salt length"),
+    }
+
+    Ok(())
+}
+
+#[test]
+fn test_encrypted_data_integrity() -> Result<(), KapsError> {
+    let original_dir = TempDir::new()?;
+    let encrypted_dir = TempDir::new()?;
+    let password = "MyStrongPassword!";
+
+    fs::write(original_dir.path().join("data.bin"), vec![0u8; 1024])?;
+
+    crypto::encrypt_directory(original_dir.path(), encrypted_dir.path(), password)?;
+
+    // Verificar que los archivos encriptados son diferentes
+    let original = fs::read(original_dir.path().join("data.bin"))?;
+    let encrypted = fs::read(encrypted_dir.path().join("data.bin"))?;
+
+    assert_ne!(original, encrypted, "Encrypted data matches original");
+    assert!(encrypted.len() > original.len(), "Encrypted size mismatch");
+
+    Ok(())
+}
+
+#[test]
+fn test_wrong_password_failure() {
+    let original_dir = TempDir::new().unwrap();
+    let encrypted_dir = TempDir::new().unwrap();
+    let decrypted_dir = TempDir::new().unwrap();
+
+    fs::write(original_dir.path().join("secret.txt"), "confidential").unwrap();
+
+    crypto::encrypt_directory(original_dir.path(), encrypted_dir.path(), "GoodPass123!").unwrap();
+
+    let result = crypto::decrypt_directory(encrypted_dir.path(), decrypted_dir.path(), "WrongPass456!");
+
+    assert!(
+        matches!(result, Err(KapsError::Crypto(_))),
+        "Should fail with wrong password"
+    );
+}
+
+#[test]
+fn test_directory_structure_preservation() -> Result<(), KapsError> {
+    let original = TempDir::new()?;
+    let encrypted = TempDir::new()?;
+    let decrypted = TempDir::new()?;
+    let password = "PreserveStructure!";
+
+    // Crear estructura compleja
+    let dirs = vec![
+        "docs",
+        "images/2024",
+        "config/prod",
+    ];
+
+    for dir in &dirs {
+        fs::create_dir_all(original.path().join(dir))?;
+        fs::write(original.path().join(format!("{}/file.txt", dir)), "data")?;
+    }
+
+    crypto::encrypt_directory(original.path(), encrypted.path(), password)?;
+    crypto::decrypt_directory(encrypted.path(), decrypted.path(), password)?;
+
+    // Verificar estructura
+    for dir in dirs {
+        let decrypted_file = decrypted.path().join(format!("{}/file.txt", dir));
+        assert!(decrypted_file.exists(), "Missing file: {}", decrypted_file.display());
+
+        let content = fs::read_to_string(decrypted_file)?;
+        assert_eq!(content, "data");
+    }
+
+    Ok(())
 }

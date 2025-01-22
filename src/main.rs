@@ -1,6 +1,6 @@
-mod cli;
-mod crypto;
-mod error;
+pub mod cli;
+pub mod crypto;
+pub mod error;
 
 use anyhow::Result;
 use clap::Parser;

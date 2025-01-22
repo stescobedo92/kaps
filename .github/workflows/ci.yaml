@@ -41,7 +41,6 @@ jobs:
     # Permisos necesarios para crear releases y subir assets
     permissions:
       contents: write
-      releases: write
       packages: write
 
     steps:

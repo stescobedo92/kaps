@@ -2,7 +2,7 @@ name: Rust CI/CD
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     tags:
       - 'v*.*.*'
   pull_request:
@@ -23,12 +23,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Rust Targets
+        run: |
+          rustup target add x86_64-apple-darwin
+          rustup target add aarch64-apple-darwin
+
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
           override: true
-          targets: ${{ matrix.target }}
+          targets: ${{ contains(matrix.os, 'macos') && 'aarch64-apple-darwin' || 'x86_64-unknown-linux-gnu' }}
 
       - name: Run Tests
         uses: actions-rs/cargo@v1
@@ -37,62 +42,59 @@ jobs:
           args: -- --test-threads=1
 
   build:
-    name: Build (${{ matrix.os }})
+    name: Build (${{ matrix.config.name }})
     needs: test
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.config.runner }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        include:
-          - os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-            ext: ""
-            archive: tar.gz
-          - os: macos-latest
-            target: x86_64-apple-darwin
-            ext: ""
-            archive: zip
-          - os: windows-latest
-            target: x86_64-pc-windows-msvc
-            ext: ".exe"
-            archive: zip
+        config:
+          - { name: "Linux x86_64", runner: ubuntu-latest, target: x86_64-unknown-linux-gnu, ext: "", archive: tar.gz }
+          - { name: "macOS ARM64", runner: macos-latest, target: aarch64-apple-darwin, ext: "", archive: tar.gz }
+          - { name: "Windows x86_64", runner: windows-latest, target: x86_64-pc-windows-msvc, ext: ".exe", archive: zip }
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: |
+          rustup target add ${{ matrix.config.target }}
+          if [ "${{ matrix.config.target }}" = "x86_64-apple-darwin" ]; then
+            brew install filosottile/musl-cross/musl-cross
+          fi
 
       - uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
           override: true
-          targets: ${{ matrix.target }}
+          targets: ${{ matrix.config.target }}
 
       - name: Build Release
-        run: cargo build --release --target ${{ matrix.target }}
+        run: cargo build --release --target ${{ matrix.config.target }}
 
       - name: Package Binary
         run: |
           mkdir -p dist
-          cp target/${{ matrix.target }}/release/kaps${{ matrix.ext }} dist/kaps-${{ matrix.target }}${{ matrix.ext }}
+          cp target/${{ matrix.config.target }}/release/kaps${{ matrix.config.ext }} dist/
           
-          case ${{ matrix.archive }} in
+          case ${{ matrix.config.archive }} in
             "tar.gz")
-              tar -czvf dist/kaps-${{ matrix.target }}.tar.gz -C dist kaps-${{ matrix.target }}${{ matrix.ext }}
+              tar -czvf dist/kaps-${{ matrix.config.target }}.tar.gz -C dist kaps${{ matrix.config.ext }}
               ;;
             "zip")
-              zip -j dist/kaps-${{ matrix.target }}.zip dist/kaps-${{ matrix.target }}${{ matrix.ext }}
+              zip -j dist/kaps-${{ matrix.config.target }}.zip dist/kaps${{ matrix.config.ext }}
               ;;
           esac
 
       - name: Generate Checksum
         run: |
           cd dist
-          shasum -a 256 kaps-${{ matrix.target }}.* > sha256sums.txt
+          shasum -a 256 * > sha256sums.txt
 
       - uses: actions/upload-artifact@v3
         with:
-          name: binaries-${{ matrix.os }}
+          name: binaries-${{ matrix.config.target }}
           path: dist/*
           retention-days: 1
 
@@ -129,11 +131,10 @@ jobs:
           tag_name: ${{ steps.get_version.outputs.version }}
           name: Release ${{ steps.get_version.outputs.version }}
           body: |
-            ## Changelog
-            
-            - Version: ${{ steps.get_version.outputs.version }}
-            - Commit: [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
-            - Build date: $(date -u +'%Y-%m-%dT%H:%M:%SZ')
+            ## Arquitecturas Soportadas
+            - 🐧 Linux x86_64
+            - 🍎 macOS ARM64 (M1/M2/M3)
+            - 🪟 Windows x86_64
             
             ### Checksums
             ```sha256sum
@@ -143,4 +144,3 @@ jobs:
             release_assets/*
           draft: false
           prerelease: false
-          generate_release_notes: true

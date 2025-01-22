@@ -37,7 +37,6 @@ jobs:
           override: true
 
       - name: Run Tests
-        shell: bash
         uses: actions-rs/cargo@v1
         with:
           command: test

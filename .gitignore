@@ -1,1 +1,9 @@
 /target
+.idea/.gitignore
+.idea/kaps.iml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/workspace.xml
+.idea/gradle.xml
+.idea/misc.xml
+

@@ -71,4 +71,3 @@ jobs:
             Automated release for commit ${{ github.sha }}
             - Built with Rust stable
             - Includes Linux, Windows and macOS binaries
-          assets_path: target/release/

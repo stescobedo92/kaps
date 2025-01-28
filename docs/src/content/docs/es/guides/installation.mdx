@@ -1,0 +1,84 @@
+---
+title: Instalar KAPS
+sidebar:
+  label: Instalación
+description: 'Instala la herramienta CLI KAPS usando Cargo desde crates.io o GitHub.'
+i18nReady: true
+banner:
+  content: |
+    Esta biblioteca está en beta y en desarrollo activo. Por favor, reporta cualquier problema o sugerencia en <a href="https://github.com/stescobedo92/kaps/issues" target="_blank">GitHub</a>.
+---
+
+import { Tabs, TabItem, FileTree, CardGrid, LinkCard, Steps } from '@astrojs/starlight/components';
+
+<Steps>
+
+1. **Prerequisitos**
+
+   Asegúrate de tener instalado el [toolchain de Rust](https://www.rust-lang.org/tools/install), incluyendo `cargo`.
+   
+   Verifica con:
+   ```shell
+   cargo --version
+   ```
+
+2. **Instalar KAPS**
+
+   <Tabs>
+     <TabItem label="Versión Estable (crates.io)" default>
+       Instala la última versión estable:
+       ```shell
+       cargo install kaps
+       ```
+       *Recomendado para la mayoría de los usuarios.*
+     </TabItem>
+     <TabItem label="Versión de Desarrollo (GitHub)">
+       Instala los últimos cambios no publicados desde GitHub:
+       ```shell
+       cargo install --git https://github.com/stescobedo92/kaps
+       ```
+       *Usa esto si necesitas funciones aún no publicadas en crates.io.*
+     </TabItem>
+   </Tabs>
+
+3. **Verificar Instalación**
+
+   Asegúrate de que KAPS está instalado correctamente:
+   ```shell
+   kaps --version
+   ```
+   Deberías ver información de la versión como `kaps 0.1.0`.
+
+</Steps>
+
+### Solución de Problemas
+#### Problemas de Red
+
+```shell
+error: failed to download from registry `crates-io`
+```
+
+**Solución:**
+1. Verifica tu conexión a internet
+2. Intenta usar una red diferente o VPN
+3. Verifica si crates.io está accesible: `cargo search kaps`
+
+#### Incompatibilidad de Versión de Rust
+
+```shell
+error: package `kaps v0.1.0` cannot be built because it requires rustc x.y.z or newer
+```
+
+**Solución:** Actualiza tu toolchain de Rust:
+```shell
+rustup update stable
+```
+
+<CardGrid>
+  <LinkCard title="Problemas con PATH" href="https://doc.rust-lang.org/cargo/commands/cargo-install.html#description">
+    Si no se reconoce <code>kaps</code>, asegúrate de que <code>$HOME/.cargo/bin</code> esté en tu PATH del sistema.
+  </LinkCard>
+  <LinkCard title="Errores de Compilación" href="https://github.com/stescobedo92/kaps/issues">
+    Si la instalación falla por dependencias faltantes, verifica las herramientas de compilación de tu sistema (ej., <code>gcc</code>, <code>make</code>). Reporta problemas en GitHub.
+  </LinkCard>
+</CardGrid>

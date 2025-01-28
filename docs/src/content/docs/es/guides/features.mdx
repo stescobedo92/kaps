@@ -1,0 +1,99 @@
+---
+title: KAPS - Características
+description: 'Cifrado de archivos de nivel empresarial con compatibilidad multiplataforma y arquitectura segura'
+i18nReady: true
+---
+
+import { Tabs, TabItem, FileTree, CardGrid, LinkCard, Steps } from '@astrojs/starlight/components';
+
+## 🔐 Características de Seguridad Principales
+
+<CardGrid>
+  <LinkCard title="Cifrado de Grado Militar">
+    **Implementación AES-256-CBC**  
+    Cifrado simétrico estándar de la industria con claves de 256 bits. Ideal para proteger datos sensibles en reposo.
+  </LinkCard>
+
+  <LinkCard title="Derivación Segura de Claves">
+    **PBKDF2-HMAC-SHA256**  
+    100,000 iteraciones para fortalecimiento de contraseñas. Protege contra ataques de fuerza bruta incluso con contraseñas débiles.
+  </LinkCard>
+
+  <LinkCard title="Integridad Criptográfica">
+    **Generación Única de Salt & IV**  
+    Salts aleatorios de 128 bits y vectores de inicialización generados por operación. Nunca se reutilizan entre sesiones.
+  </LinkCard>
+</CardGrid>
+
+## 🌐 Usabilidad & Compatibilidad
+
+<Tabs>
+  <TabItem label="Soporte Multiplataforma" default>
+    **Ejecución Nativa En:**
+    - Windows (x86_64)
+    - Linux (ARM64/x86_64)
+    - macOS (Apple Silicon/Intel)
+    
+    _Binario único sin dependencias en tiempo de ejecución_
+  </TabItem>
+
+  <TabItem label="Preservación de Estructura">
+    **Mantiene la Jerarquía Original**  
+    Cifra mientras preserva:  
+    - Diseños de directorios
+    - Nombres de archivos
+    - Timestamps de metadatos
+    
+    _Esencial para flujos de trabajo automatizados y registros de auditoría_
+  </TabItem>
+</Tabs>
+
+## 🛡️ Especificaciones Técnicas
+
+```shell
+# Parámetros de Seguridad
+Iteraciones de Clave: 100,000 rondas PBKDF2
+Tamaño de Salt:      128 bits aleatorios
+Tamaño de IV:        Alineado al bloque AES de 128 bits
+Cifrado:             AES-256 en modo CBC
+HMAC:                SHA256
+```
+
+## 📊 Comparación de Características
+
+| Capacidad | KAPS | Herramientas Tradicionales |
+|-----------|------|---------------------------|
+| Cifrado Estructurado | ✅ Preservado | ❌ Aplanado |
+| Seguridad de Contraseña | ✅ Fortalecido con PBKDF2 | ❌ KDF Débil |
+| Portabilidad Binaria | ✅ Archivo único | ❌ Multi-dependiente |
+| Integridad de Metadatos | ✅ Timestamps | ❌ Modificado |
+
+🏆 ¿Por Qué Elegir KAPS?
+
+<Steps>
+
+1. **Seguridad Primero**
+   
+   Implementa las mejores prácticas criptográficas desde el principio - sin configuraciones inseguras por defecto.
+
+2. **Amigable para Desarrolladores**
+   
+   Las estructuras preservadas permiten una integración CI/CD y scripting sin problemas.
+
+3. **Listo para Auditoría**
+   
+   Salidas deterministas con total transparencia criptográfica.
+
+</Steps>
+
+### 🛠️ Casos de Uso
+
+Archivado seguro de documentos sensibles
+
+Protección de archivos de configuración en control de versiones
+
+Transferencia segura de registros médicos/legales
+
+Cifrado de cargas de respaldo antes del almacenamiento en la nube
+
+<LinkCard title="Comenzar →" href="/kaps/es/guides/installation" />

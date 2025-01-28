@@ -1,0 +1,76 @@
+---
+title: KAPS - Secure File Encryption
+description: Enterprise-grade file encryption tool with cross-platform support and secure architecture.
+template: splash
+hero:
+  tagline: Protect your sensitive data with military-grade encryption
+  image:
+    file: ../../assets/houston.webp
+  actions:
+    - text: Get Started
+      link: /kaps/guides/installation/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/stescobedo92/kaps
+      icon: github
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+## Why KAPS?
+
+<CardGrid stagger>
+  <Card title="Military-Grade Security" icon="seti:lock">
+    AES-256-CBC encryption with PBKDF2 key derivation for maximum protection of your sensitive data.
+  </Card>
+  <Card title="Cross-Platform" icon="laptop">
+    Single binary that runs natively on Windows, Linux, and macOS - no dependencies required.
+  </Card>
+  <Card title="Structure Preserving" icon="seti:folder">
+    Maintains directory hierarchies and metadata during encryption/decryption operations.
+  </Card>
+  <Card title="Developer Friendly" icon="seti:godot">
+    Perfect for CI/CD pipelines, version control, and automated workflows.
+  </Card>
+</CardGrid>
+
+## Quick Start
+
+```bash
+# Install KAPS
+cargo install kaps
+
+# Encrypt a directory
+kaps encrypt -i ./secrets -o ./encrypted -p "your-secure-password"
+```
+
+## Features Overview
+
+<CardGrid>
+  <Card title="Secure by Default" icon="seti:lock">
+    - AES-256-CBC encryption
+    - PBKDF2 key derivation
+    - Random salt & IV generation
+  </Card>
+  <Card title="Easy Integration" icon="puzzle">
+    - Command-line interface
+    - Scriptable operations
+    - Batch processing support
+  </Card>
+</CardGrid>
+
+<CardGrid>
+  <LinkCard 
+    title="Installation Guide" 
+    href="/kaps/guides/installation/"
+    description="Get started with KAPS installation and setup"
+  />
+  <LinkCard 
+    title="Usage Documentation" 
+    href="/kaps/guides/usage/"
+    description="Learn how to use KAPS effectively"
+    variant="minimal"
+  />
+</CardGrid>

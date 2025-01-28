@@ -1,0 +1,99 @@
+---
+title: KAPS - Features
+description: 'Enterprise-grade file encryption with cross-platform compatibility and secure architecture'
+i18nReady: true
+---
+
+import { Tabs, TabItem, FileTree, CardGrid, LinkCard, Steps } from '@astrojs/starlight/components';
+
+## 🔐 Core Security Features
+
+<CardGrid>
+  <LinkCard title="Military-Grade Encryption">
+    **AES-256-CBC Implementation**  
+    Industry-standard symmetric encryption with 256-bit keys. Ideal for protecting sensitive data at rest.
+  </LinkCard>
+
+  <LinkCard title="Secure Key Derivation">
+    **PBKDF2-HMAC-SHA256**  
+    100,000 iterations for password hardening. Protects against brute-force attacks even with weak passwords.
+  </LinkCard>
+
+  <LinkCard title="Cryptographic Integrity">
+    **Unique Salt & IV Generation**  
+    Random 128-bit salts and initialization vectors generated per operation. Never reused between sessions.
+  </LinkCard>
+</CardGrid>
+
+## 🌐 Usability & Compatibility
+
+<Tabs>
+  <TabItem label="Cross-Platform Support" default>
+    **Native Execution On:**
+    - Windows (x86_64)
+    - Linux (ARM64/x86_64)
+    - macOS (Apple Silicon/Intel)
+    
+    _Single binary with zero runtime dependencies_
+  </TabItem>
+
+  <TabItem label="Structure Preservation">
+    **Maintains Original Hierarchy**  
+    Encrypts while preserving:  
+    - Directory layouts
+    - File names
+    - Metadata timestamps
+    
+    _Essential for automated workflows and audit trails_
+  </TabItem>
+</Tabs>
+
+## 🛡️ Technical Specifications
+
+```shell
+# Security Parameters
+Key Iterations: 100,000 PBKDF2 rounds
+Salt Size:      128-bit random
+IV Size:        AES-block aligned 128-bit
+Cipher:         AES-256 in CBC mode
+HMAC:           SHA256
+```
+
+## 📊 Feature Comparison
+
+| Capability | KAPS | Traditional Tools |
+|------------|------|------------------|
+| Structured Encryption | ✅ Preserved | ❌ Flattened |
+| Password Security | ✅ PBKDF2-Hardened | ❌ Weak KDF |
+| Binary Portability | ✅ Single-file | ❌ Multi-dependent |
+| Metadata Integrity | ✅ Timestamps | ❌ Modified |
+
+🏆 Why Choose KAPS?
+
+<Steps>
+
+1. **Security First**
+   
+   Implements crypto best practices out-of-the-box - no insecure defaults.
+
+2. **Developer Friendly**
+   
+   Preserved structures enable seamless CI/CD integration and scripting.
+
+3. **Audit Ready**
+   
+   Deterministic outputs with full cryptographic transparency.
+
+</Steps>
+
+### 🛠️ Use Cases
+
+Secure archival of sensitive documents
+
+Protection of configuration files in version control
+
+Safe transfer of medical/legal records
+
+Encryption of backup payloads before cloud storage
+
+<LinkCard title="Get Started →" href="/kaps/guides/installation" />

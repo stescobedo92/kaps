@@ -1,0 +1,111 @@
+---
+title: KAPS - Uso
+description: 'Flujos de trabajo de cifrado/descifrado seguro de directorios con KAPS'
+i18nReady: true
+---
+
+import { Tabs, TabItem, FileTree, CardGrid, LinkCard, Steps } from '@astrojs/starlight/components';
+
+## 📖 Resumen de Comandos
+
+<Tabs>
+  <TabItem label="Cifrar" default>
+    ```shell
+    kaps encrypt \
+      --input <directorio_origen> \
+      --output <directorio_cifrado> \
+      --password "TuFraseSegura!"
+    ```
+    _Crea una copia cifrada manteniendo la estructura original_
+  </TabItem>
+
+  <TabItem label="Descifrar">
+    ```shell
+    kaps decrypt \
+      --input <directorio_cifrado> \
+      --output <directorio_descifrado> \
+      --password "TuFraseSegura!"
+    ```
+    _Restaura los archivos originales con integridad de metadatos_
+  </TabItem>
+</Tabs>
+
+## 🧰 Opciones Principales
+
+| Opción | Descripción | Requerido |
+|--------|-------------|-----------|
+| `--input`, `-i` | Directorio fuente a procesar | ✅ Sí |
+| `--output`, `-o` | Destino para los resultados | ✅ Sí |
+| `--password`, `-p` | Frase de cifrado | ✅ Sí |
+| `--verbose`, `-v` | Mostrar progreso detallado | ❌ No |
+| `--help`, `-h` | Mostrar información de ayuda | ❌ No |
+
+## 🎯 Ejemplos Comunes
+
+<Steps>
+
+1. **Cifrado Básico de Directorio**
+   
+   ```shell
+   kaps encrypt -i ./secretos -o ./cifrado -p "micontraseña123"
+   ```
+
+2. **Descifrado con Detalles**
+   
+   ```shell
+   kaps decrypt -i ./cifrado -o ./descifrado -p "micontraseña123" --verbose
+   ```
+
+3. **Procesamiento de Múltiples Directorios**
+   
+   ```shell
+   for dir in ./dir1 ./dir2 ./dir3; do
+     kaps encrypt -i "$dir" -o "${dir}_cifrado" -p "micontraseña123"
+   done
+   ```
+
+</Steps>
+
+## 💡 Mejores Prácticas
+
+<CardGrid>
+  <LinkCard title="Gestión de Contraseñas">
+    - Usa frases de paso largas y aleatorias
+    - Almacena las contraseñas de forma segura
+    - No reutilices contraseñas entre diferentes cifrados
+  </LinkCard>
+
+  <LinkCard title="Estrategia de Respaldo">
+    - Mantén copias de respaldo cifradas de los archivos originales
+    - Prueba el proceso de descifrado regularmente
+    - Documenta tus flujos de trabajo de cifrado
+  </LinkCard>
+</CardGrid>
+
+## ⚠️ Notas Importantes
+
+- Siempre verifica que los archivos descifrados coincidan con los originales
+- Mantén las frases de paso en un gestor de contraseñas seguro
+- Respalda los datos cifrados y las frases de paso por separado
+- Prueba primero con conjuntos pequeños de datos
+
+## 🔍 Manejo de Errores
+
+<Tabs>
+  <TabItem label="Errores Comunes" default>
+    ```shell
+    Error: Contraseña inválida
+    Solución: Verifica la frase de paso
+
+    Error: Permiso denegado
+    Solución: Verifica los permisos de archivos/directorios
+    ```
+  </TabItem>
+  
+  <TabItem label="Pasos de Recuperación">
+    1. Verifica que existan las rutas de entrada/salida
+    2. Asegura suficiente espacio en disco
+    3. Revisa los permisos de archivos
+    4. Valida el formato de la frase de paso
+  </TabItem>
+</Tabs>

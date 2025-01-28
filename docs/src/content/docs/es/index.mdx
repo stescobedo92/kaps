@@ -1,0 +1,76 @@
+---
+title: KAPS - Cifrado Seguro de Archivos
+description: Herramienta de cifrado de archivos de nivel empresarial con compatibilidad multiplataforma y arquitectura segura.
+template: splash
+hero:
+  tagline: Protege tus datos sensibles con cifrado de grado militar
+  image:
+    file: ../../../assets/houston.webp
+  actions:
+    - text: Comenzar
+      link: /kaps/es/guides/installation/
+      icon: right-arrow
+      variant: primary
+    - text: Ver en GitHub
+      link: https://github.com/stescobedo92/kaps
+      icon: github
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+## ¿Por qué KAPS?
+
+<CardGrid stagger>
+  <Card title="Seguridad de Grado Militar" icon="seti:lock">
+    Cifrado AES-256-CBC con derivación de claves PBKDF2 para máxima protección de tus datos sensibles.
+  </Card>
+  <Card title="Multiplataforma" icon="laptop">
+    Ejecutable único que funciona nativamente en Windows, Linux y macOS - sin dependencias adicionales.
+  </Card>
+  <Card title="Preservación de Estructura" icon="seti:folder">
+    Mantiene las jerarquías de directorios y metadatos durante las operaciones de cifrado/descifrado.
+  </Card>
+  <Card title="Amigable para Desarrolladores" icon="seti:godot">
+    Perfecto para pipelines CI/CD, control de versiones y flujos de trabajo automatizados.
+  </Card>
+</CardGrid>
+
+## Inicio Rápido
+
+```bash
+# Instalar KAPS
+cargo install kaps
+
+# Cifrar un directorio
+kaps encrypt -i ./secretos -o ./cifrado -p "tu-contraseña-segura"
+```
+
+## Resumen de Características
+
+<CardGrid>
+  <Card title="Seguro por Defecto" icon="seti:lock">
+    - Cifrado AES-256-CBC
+    - Derivación de claves PBKDF2
+    - Generación aleatoria de salt & IV
+  </Card>
+  <Card title="Fácil Integración" icon="puzzle">
+    - Interfaz de línea de comandos
+    - Operaciones programables
+    - Soporte para procesamiento por lotes
+  </Card>
+</CardGrid>
+
+<CardGrid>
+  <LinkCard 
+    title="Guía de Instalación" 
+    href="/kaps/es/guides/installation/"
+    description="Comienza con la instalación y configuración de KAPS"
+  />
+  <LinkCard 
+    title="Documentación de Uso" 
+    href="/kaps/es/guides/usage/"
+    description="Aprende a utilizar KAPS efectivamente"
+    variant="minimal"
+  />
+</CardGrid>

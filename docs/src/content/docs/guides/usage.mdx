@@ -1,0 +1,110 @@
+---
+title: KAPS - Usage
+description: 'Secure directory encryption/decryption workflows with KAPS'
+i18nReady: true
+---
+import { Tabs, TabItem, FileTree, CardGrid, LinkCard, Steps } from '@astrojs/starlight/components';
+
+## 📖 Command Overview
+
+<Tabs>
+  <TabItem label="Encrypt" default>
+    ```shell
+    kaps encrypt \
+      --input <source_directory> \
+      --output <encrypted_directory> \
+      --password "YourSecurePassphrase!"
+    ```
+    _Creates encrypted copy while preserving original structure_
+  </TabItem>
+
+  <TabItem label="Decrypt">
+    ```shell
+    kaps decrypt \
+      --input <encrypted_directory> \
+      --output <decrypted_directory> \
+      --password "YourSecurePassphrase!"
+    ```
+    _Restores original files with metadata integrity_
+  </TabItem>
+</Tabs>
+
+## 🧰 Core Options
+
+| Option | Description | Required |
+|--------|-------------|----------|
+| `--input`, `-i` | Source directory to process | ✅ Yes |
+| `--output`, `-o` | Destination for results | ✅ Yes |
+| `--password`, `-p` | Encryption passphrase | ✅ Yes |
+| `--verbose`, `-v` | Show detailed progress | ❌ No |
+| `--help`, `-h` | Display help information | ❌ No |
+
+## 🎯 Common Examples
+
+<Steps>
+
+1. **Basic Directory Encryption**
+   
+   ```shell
+   kaps encrypt -i ./secrets -o ./encrypted -p "mypassword123"
+   ```
+
+2. **Verbose Decryption**
+   
+   ```shell
+   kaps decrypt -i ./encrypted -o ./decrypted -p "mypassword123" --verbose
+   ```
+
+3. **Multiple Directory Processing**
+   
+   ```shell
+   for dir in ./dir1 ./dir2 ./dir3; do
+     kaps encrypt -i "$dir" -o "${dir}_encrypted" -p "mypassword123"
+   done
+   ```
+
+</Steps>
+
+## 💡 Best Practices
+
+<CardGrid>
+  <LinkCard title="Password Management">
+    - Use long, random passphrases
+    - Store passwords securely
+    - Don't reuse passwords across different encryptions
+  </LinkCard>
+
+  <LinkCard title="Backup Strategy">
+    - Keep encrypted backups of original files
+    - Test decryption process regularly
+    - Document your encryption workflows
+  </LinkCard>
+</CardGrid>
+
+## ⚠️ Important Notes
+
+- Always verify decrypted files match originals
+- Keep passphrases in a secure password manager
+- Backup encrypted data and passphrases separately
+- Test on small datasets first
+
+## 🔍 Error Handling
+
+<Tabs>
+  <TabItem label="Common Errors" default>
+    ```shell
+    Error: Invalid password
+    Solution: Double-check passphrase
+
+    Error: Permission denied
+    Solution: Check file/directory permissions
+    ```
+  </TabItem>
+  
+  <TabItem label="Recovery Steps">
+    1. Verify input/output paths exist
+    2. Ensure sufficient disk space
+    3. Check file permissions
+    4. Validate passphrase format
+  </TabItem>
+</Tabs>

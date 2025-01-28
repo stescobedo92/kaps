@@ -1,0 +1,84 @@
+---
+title: Install KAPS
+sidebar:
+  label: Installation
+description: 'Install the KAPS CLI tool using Cargo from crates.io or GitHub.'
+i18nReady: true
+banner:
+  content: |
+    This library is in beta and under active development. Please report any issues or suggestions on <a href="https://github.com/stescobedo92/kaps/issues" target="_blank">GitHub</a>.
+---
+
+import { Tabs, TabItem, FileTree, CardGrid, LinkCard, Steps } from '@astrojs/starlight/components';
+
+<Steps>
+
+1. **Prerequisites**
+
+   Ensure you have the [Rust toolchain](https://www.rust-lang.org/tools/install) installed, including `cargo`.
+   
+   Verify with:
+   ```shell
+   cargo --version
+   ```
+
+2. **Install KAPS**
+
+   <Tabs>
+     <TabItem label="Stable Release (crates.io)" default>
+       Install the latest stable version:
+       ```shell
+       cargo install kaps
+       ```
+       *Recommended for most users.*
+     </TabItem>
+     <TabItem label="Development Version (GitHub)">
+       Install the latest unreleased changes from GitHub:
+       ```shell
+       cargo install --git https://github.com/stescobedo92/kaps
+       ```
+       *Use this if you need features not yet published to crates.io.*
+     </TabItem>
+   </Tabs>
+
+3. **Verify Installation**
+
+   Ensure KAPS is installed correctly:
+   ```shell
+   kaps --version
+   ```
+   You should see version information like `kaps 0.1.0`.
+
+</Steps>
+
+### Troubleshooting
+#### Network Issues
+
+```shell
+error: failed to download from registry `crates-io`
+```
+
+**Solution:**
+1. Check your internet connection
+2. Try using a different network or VPN
+3. Verify if crates.io is accessible: `cargo search kaps`
+
+#### Rust Version Mismatch
+
+```shell
+error: package `kaps v0.1.0` cannot be built because it requires rustc x.y.z or newer
+```
+
+**Solution:** Update your Rust toolchain:
+```shell
+rustup update stable
+```
+
+<CardGrid>
+  <LinkCard title="PATH Issues" href="https://doc.rust-lang.org/cargo/commands/cargo-install.html#description">
+    If <code>kaps</code> isn’t recognized, ensure <code>$HOME/.cargo/bin</code> is in your system PATH.
+  </LinkCard>
+  <LinkCard title="Build Errors" href="https://github.com/stescobedo92/kaps/issues">
+    If installation fails due to missing dependencies, check your system’s build tools (e.g., <code>gcc</code>, <code>make</code>). Report issues on GitHub.
+  </LinkCard>
+</CardGrid>
